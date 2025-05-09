@@ -1,9 +1,10 @@
 <?php
-require_once '../config/db.php';
-require_once '../classes/User.php';
+require_once '../config/Database.php';
+require_once '../controllers/UserController.php';
 
-$user = new User($conn);
-$user->logout();
+// Buat instance dari UserController
+$userController = new UserController();
 
-header("Location: ../views/login.php");
-exit;
+// Handle proses logout
+$userController->logout();
+?>

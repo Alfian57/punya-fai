@@ -1,11 +1,13 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-?>
+require_once '../controllers/Controller.php';
 
+// Cek login
+$controller = new Controller();
+$controller->requireLogin();
+
+// Ambil pesan flash jika ada
+$flashMessage = $controller->getFlashMessage();
+?>
 
 <!DOCTYPE html>
 <html lang="id">
@@ -13,29 +15,37 @@ if (!isset($_SESSION['user_id'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Data Balita</title>
+    <title>Tambah Data Balita</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
 <body>
     <div class="container my-5">
-        <h2>Tambah Data</h2>
+        <?php if (isset($flashMessage)): ?>
+            <div class="alert alert-<?= $flashMessage['type'] === 'success' ? 'success' : 'danger' ?> alert-dismissible fade show"
+                role="alert">
+                <?= $flashMessage['message'] ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php endif; ?>
+
+        <h2>Tambah Data Balita</h2>
         <br>
 
         <form action="../proses/proses_tambah.php" method="post">
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Nama</label>
                 <div class="col-sm-6">
-                    <input type="text" name="nama" class="form-control" placeholder="Masukkan nama...">
+                    <input type="text" name="nama" class="form-control" placeholder="Masukkan nama..." required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Jenis Kelamin</label>
                 <div class="col-sm-6">
-                    <select name="jenisKelamin" class="form-control" >
-                        <option value="Laki-Laki" >Laki-Laki</option>
+                    <select name="jenisKelamin" class="form-control" required>
+                        <option value="Laki-Laki">Laki-Laki</option>
                         <option value="Perempuan">Perempuan</option>
                     </select>
                 </div>
@@ -44,21 +54,23 @@ if (!isset($_SESSION['user_id'])) {
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Tinggi Badan (cm)</label>
                 <div class="col-sm-6">
-                    <input type="number" name="tinggi" class="form-control" placeholder="Tinggi badan..." step="0.01">
+                    <input type="number" name="tinggi" class="form-control" placeholder="Tinggi badan..." step="0.01"
+                        required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Berat Badan (kg)</label>
                 <div class="col-sm-6">
-                    <input type="number" name="berat" class="form-control" placeholder="Berat badan...">
+                    <input type="number" name="berat" class="form-control" placeholder="Berat badan..." step="0.01"
+                        required>
                 </div>
             </div>
 
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Tanggal Lahir</label>
                 <div class="col-sm-6">
-                    <input type="date" name="tanggalLahir" class="form-control">
+                    <input type="date" name="tanggalLahir" class="form-control" required>
                 </div>
             </div>
 
@@ -78,7 +90,7 @@ if (!isset($_SESSION['user_id'])) {
 
             <div class="row mb-3">
                 <div class="col-sm-3">
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                    <button type="submit" class="btn btn-primary">Simpan Data</button>
                 </div>
                 <div class="col-sm-6">
                     <a href="dashboard.php" class="btn btn-outline-primary">Kembali</a>
@@ -87,6 +99,7 @@ if (!isset($_SESSION['user_id'])) {
         </form>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

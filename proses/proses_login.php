@@ -1,18 +1,10 @@
 <?php
-require_once '../config/db.php';
-require_once '../classes/User.php';
+require_once '../config/Database.php';
+require_once '../controllers/UserController.php';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+// Buat instance dari UserController
+$userController = new UserController();
 
-    $user = new User($conn);
-    if ($user->login($username, $password)) {
-        header("Location: ../views/dashboard.php");
-        exit;
-    } else {
-        header("Location: ../views/login.php?error=Login gagal");
-        exit;
-    }
-}
+// Handle proses login
+$userController->login();
 ?>

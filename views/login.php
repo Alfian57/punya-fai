@@ -1,13 +1,21 @@
 <?php
 session_start();
-if (isset($_SESSION['user_id'])) {
-    header("Location: dashboard.php");
-    exit;
+require_once '../controllers/UserController.php';
+
+$userController = new UserController();
+
+// Jika sudah login, redirect ke dashboard
+if ($userController->isLoggedIn()) {
+    $userController->redirect('dashboard.php');
 }
+
+// Ambil pesan flash jika ada
+$flashMessage = $userController->getFlashMessage();
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -23,8 +31,17 @@ if (isset($_SESSION['user_id'])) {
         }
     </style>
 </head>
+
 <body>
-    <form action="../proses/proses_login.php" method="POST" class="bg-white rounded-lg shadow-xl text-sm text-gray-500 border border-gray-200 p-8 py-12 w-80 sm:w-[352px]">
+    <?php if (isset($flashMessage)): ?>
+        <div
+            class="fixed top-4 right-4 px-4 py-2 rounded-md <?= $flashMessage['type'] === 'success' ? 'bg-green-500' : 'bg-red-500' ?> text-white">
+            <?= $flashMessage['message'] ?>
+        </div>
+    <?php endif; ?>
+
+    <form action="../proses/proses_login.php" method="POST"
+        class="bg-white rounded-lg shadow-xl text-sm text-gray-500 border border-gray-200 p-8 py-12 w-80 sm:w-[352px]">
         <p class="text-2xl font-medium text-center">
             <span class="text-indigo-500">Akun</span> Login
         </p>
@@ -41,9 +58,11 @@ if (isset($_SESSION['user_id'])) {
                 class="border border-gray-200 rounded w-full p-2 mt-1 outline-indigo-500">
         </div>
 
-        <button type="submit" class="bg-indigo-500 hover:bg-indigo-600 transition-all text-white w-full py-2 rounded-md mt-4 cursor-pointer">
+        <button type="submit"
+            class="bg-indigo-500 hover:bg-indigo-600 transition-all text-white w-full py-2 rounded-md mt-4 cursor-pointer">
             Login
         </button>
     </form>
 </body>
+
 </html>

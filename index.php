@@ -1,13 +1,17 @@
 <?php
+require_once 'config/Database.php';
+require_once 'controllers/Controller.php';
+
+// Mulai session
 session_start();
 
+$controller = new Controller();
+
 // Jika sudah login, arahkan ke dashboard
-if (isset($_SESSION['user_id'])) {
-    header("Location: views/dashboard.php");
-    exit;
+if ($controller->isLoggedIn()) {
+    $controller->redirect('views/dashboard.php');
 } else {
     // Jika belum login, arahkan ke halaman login
-    header("Location: views/login.php");
-    exit;
+    $controller->redirect('views/login.php');
 }
 ?>

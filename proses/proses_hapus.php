@@ -1,19 +1,13 @@
 <?php
-require_once '../config/db.php';
+require_once '../config/Database.php';
+require_once '../controllers/BayiController.php';
 
+// Buat instance dari BayiController
+$bayiController = new BayiController();
+
+// Ambil ID dari parameter GET
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-if ($id > 0) {
-    $stmt = $conn->prepare("DELETE FROM databayi WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    if ($stmt->execute()) {
-        header("Location: ../views/dashboard.php");
-        exit;
-    } else {
-        echo "Error deleting record: " . $stmt->error;
-    }
-    $stmt->close();
-} else {
-    echo "Invalid ID.";
-}
+// Handle proses hapus
+$bayiController->hapus($id);
 ?>
