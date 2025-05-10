@@ -18,8 +18,12 @@ switch ($controller) {
         $currentController = new BayiController();
         break;
     case 'user':
-    default:
         $currentController = new UserController();
+        break;
+    default:
+        // Controller tidak valid, arahkan ke UserController
+        $currentController = new UserController();
+        $action = 'loginForm'; // Set action default
         break;
 }
 
@@ -33,7 +37,7 @@ if (method_exists($currentController, $action)) {
     }
 } else {
     // Action tidak valid, arahkan ke halaman login
-    $user = new UserController();
-    $user->loginForm();
+    $userController = new UserController();
+    $userController->loginForm();
 }
 ?>

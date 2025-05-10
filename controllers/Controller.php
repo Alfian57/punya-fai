@@ -14,13 +14,13 @@ class Controller
         // Ekstrak data ke variabel
         extract($data);
 
-        // Berikan path lengkap ke view
-        $viewPath = "../views/{$view}.php";
+        // Berikan path lengkap ke view dengan menggunakan __DIR__ untuk path absolut
+        $viewPath = realpath(__DIR__ . "/../views/{$view}.php");
 
-        if (file_exists($viewPath)) {
+        if ($viewPath && file_exists($viewPath)) {
             require_once $viewPath;
         } else {
-            die("View {$view} tidak ditemukan!");
+            die("View {$view} tidak ditemukan! Path: " . __DIR__ . "/../views/{$view}.php");
         }
     }
 
@@ -69,7 +69,7 @@ class Controller
      * @param string $type Tipe pesan (success, error, warning, info)
      * @param string $message Pesan yang akan ditampilkan
      */
-    protected function setFlashMessage($type, $message)
+    public function setFlashMessage($type, $message)
     {
         $this->startSession();
         $_SESSION['flash_message'] = [

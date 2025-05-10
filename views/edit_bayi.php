@@ -1,28 +1,3 @@
-<?php
-require_once '../config/Database.php';
-require_once '../controllers/BayiController.php';
-require_once '../controllers/Controller.php';
-
-// Cek login
-$controller = new Controller();
-$controller->requireLogin();
-
-// Ambil data bayi berdasarkan ID
-$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
-
-$bayiController = new BayiController();
-$dataBayi = $bayiController->bayiModel->getBayiById($id);
-
-// Jika data tidak ditemukan, redirect ke dashboard
-if (!$dataBayi) {
-    $controller->setFlashMessage('error', 'Data bayi tidak ditemukan');
-    $controller->redirect('dashboard.php');
-}
-
-// Ambil pesan flash jika ada
-$flashMessage = $controller->getFlashMessage();
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -47,7 +22,7 @@ $flashMessage = $controller->getFlashMessage();
         <h2>Edit Data Balita</h2>
         <br>
 
-        <form action="../proses/proses_edit.php" method="post">
+        <form action="index.php?controller=bayi&action=edit" method="post">
             <input type="hidden" name="id" value="<?= $dataBayi['id'] ?>">
 
             <div class="row mb-3">
@@ -115,7 +90,7 @@ $flashMessage = $controller->getFlashMessage();
                     <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
                 </div>
                 <div class="col-sm-6">
-                    <a href="dashboard.php" class="btn btn-outline-primary">Kembali</a>
+                    <a href="index.php?controller=bayi&action=index" class="btn btn-outline-primary">Kembali</a>
                 </div>
             </div>
         </form>

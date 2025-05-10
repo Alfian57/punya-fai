@@ -24,10 +24,17 @@ abstract class Model
     {
         $clean = [];
         foreach ($data as $key => $value) {
-            // Sanitasi dasar
-            $value = trim($value);
-            $value = stripslashes($value);
-            $value = htmlspecialchars($value);
+            if (is_string($value)) {
+                // Sanitasi dasar untuk string
+                $value = trim($value);
+                $value = stripslashes($value);
+                $value = htmlspecialchars($value);
+                // Escape string untuk database
+                $value = $this->conn->real_escape_string($value);
+            } elseif (is_array($value)) {
+                // Rekursif untuk array
+                $value = $this->validate($value);
+            }
             $clean[$key] = $value;
         }
         return $clean;
@@ -42,6 +49,11 @@ abstract class Model
      */
     protected function getAll($table, $orderBy = 'id', $order = 'DESC')
     {
+        // Validasi nama tabel dan kolom untuk mencegah SQL injection
+        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
+        $orderBy = preg_replace('/[^a-zA-Z0-9_]/', '', $orderBy);
+        $order = ($order === 'ASC') ? 'ASC' : 'DESC'; // Hanya izinkan ASC atau DESC
+
         $query = "SELECT * FROM {$table} ORDER BY {$orderBy} {$order}";
         $result = $this->conn->query($query);
 
@@ -64,7 +76,10 @@ abstract class Model
      */
     protected function getById($table, $id)
     {
+        // Validasi nama tabel untuk mencegah SQL injection
+        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
         $id = (int) $id;
+
         $query = "SELECT * FROM {$table} WHERE id = ? LIMIT 1";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id);
@@ -86,7 +101,10 @@ abstract class Model
      */
     protected function delete($table, $id)
     {
+        // Validasi nama tabel untuk mencegah SQL injection
+        $table = preg_replace('/[^a-zA-Z0-9_]/', '', $table);
         $id = (int) $id;
+
         $query = "DELETE FROM {$table} WHERE id = ?";
         $stmt = $this->conn->prepare($query);
         $stmt->bind_param("i", $id);
