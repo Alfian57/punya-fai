@@ -2,7 +2,7 @@
 /**
  * Kelas Controller dasar untuk semua controller
  */
-abstract class Controller
+class Controller
 {
     /**
      * Memuat view dengan data yang disediakan

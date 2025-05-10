@@ -1,6 +1,6 @@
 <?php
-require_once '../controllers/Controller.php';
-require_once '../models/UserModel.php';
+require_once dirname(__FILE__) . '/Controller.php';
+require_once dirname(__FILE__) . '/../models/UserModel.php';
 
 /**
  * Controller untuk menangani operasi data pengguna
@@ -25,10 +25,13 @@ class UserController extends Controller
     {
         // Jika sudah login, redirect ke dashboard
         if ($this->isLoggedIn()) {
-            $this->redirect('../views/dashboard.php');
+            $this->redirect('index.php?controller=bayi&action=index');
         }
 
-        $this->view('auth/login');
+        $flashMessage = $this->getFlashMessage();
+        $this->view('login', [
+            'flashMessage' => $flashMessage
+        ]);
     }
 
     /**
@@ -41,13 +44,13 @@ class UserController extends Controller
             $password = isset($_POST['password']) ? trim($_POST['password']) : '';
 
             if ($this->userModel->login($username, $password)) {
-                $this->redirect('../views/dashboard.php');
+                $this->redirect('index.php?controller=bayi&action=index');
             } else {
                 $this->setFlashMessage('error', 'Username atau password salah');
-                $this->redirect('../views/login.php');
+                $this->redirect('index.php?controller=user&action=loginForm');
             }
         } else {
-            $this->redirect('../views/login.php');
+            $this->redirect('index.php?controller=user&action=loginForm');
         }
     }
 
@@ -57,7 +60,7 @@ class UserController extends Controller
     public function logout()
     {
         $this->userModel->logout();
-        $this->redirect('../views/login.php');
+        $this->redirect('index.php?controller=user&action=loginForm');
     }
 
     /**
@@ -67,10 +70,13 @@ class UserController extends Controller
     {
         // Jika sudah login, redirect ke dashboard
         if ($this->isLoggedIn()) {
-            $this->redirect('../views/dashboard.php');
+            $this->redirect('index.php?controller=bayi&action=index');
         }
 
-        $this->view('auth/register');
+        $flashMessage = $this->getFlashMessage();
+        $this->view('register', [
+            'flashMessage' => $flashMessage
+        ]);
     }
 
     /**
@@ -89,13 +95,13 @@ class UserController extends Controller
 
             if ($this->userModel->register()) {
                 $this->setFlashMessage('success', 'Registrasi berhasil, silakan login');
-                $this->redirect('../views/login.php');
+                $this->redirect('index.php?controller=user&action=loginForm');
             } else {
                 $this->setFlashMessage('error', 'Registrasi gagal, username mungkin sudah digunakan');
-                $this->redirect('../views/register.php');
+                $this->redirect('index.php?controller=user&action=registerForm');
             }
         } else {
-            $this->redirect('../views/register.php');
+            $this->redirect('index.php?controller=user&action=registerForm');
         }
     }
 }

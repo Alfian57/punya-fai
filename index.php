@@ -1,17 +1,39 @@
 <?php
 require_once 'config/Database.php';
 require_once 'controllers/Controller.php';
+require_once 'controllers/UserController.php';
+require_once 'controllers/BayiController.php';
 
 // Mulai session
 session_start();
 
-$controller = new Controller();
+// Logika routing sederhana
+$controller = isset($_GET['controller']) ? $_GET['controller'] : 'user';
+$action = isset($_GET['action']) ? $_GET['action'] : 'loginForm';
+$id = isset($_GET['id']) ? intval($_GET['id']) : null;
 
-// Jika sudah login, arahkan ke dashboard
-if ($controller->isLoggedIn()) {
-    $controller->redirect('views/dashboard.php');
+// Inisialisasi controller yang sesuai
+switch ($controller) {
+    case 'bayi':
+        $currentController = new BayiController();
+        break;
+    case 'user':
+    default:
+        $currentController = new UserController();
+        break;
+}
+
+// Memanggil method yang sesuai dengan action yang diminta
+if (method_exists($currentController, $action)) {
+    // Jika method memerlukan parameter ID
+    if ($id !== null && in_array($action, ['editForm', 'hapus'])) {
+        $currentController->$action($id);
+    } else {
+        $currentController->$action();
+    }
 } else {
-    // Jika belum login, arahkan ke halaman login
-    $controller->redirect('views/login.php');
+    // Action tidak valid, arahkan ke halaman login
+    $user = new UserController();
+    $user->loginForm();
 }
 ?>

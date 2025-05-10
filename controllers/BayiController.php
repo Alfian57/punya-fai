@@ -1,6 +1,6 @@
 <?php
-require_once '../controllers/Controller.php';
-require_once '../models/BayiModel.php';
+require_once dirname(__FILE__) . '/Controller.php';
+require_once dirname(__FILE__) . '/../models/BayiModel.php';
 
 /**
  * Controller untuk menangani operasi data bayi
@@ -8,7 +8,7 @@ require_once '../models/BayiModel.php';
 class BayiController extends Controller
 {
     // Model data bayi
-    private $bayiModel;
+    public $bayiModel;
 
     /**
      * Constructor
@@ -28,7 +28,7 @@ class BayiController extends Controller
         $dataBayi = $this->bayiModel->getAllBayi();
         $flashMessage = $this->getFlashMessage();
 
-        $this->view('bayi/index', [
+        $this->view('dashboard', [
             'dataBayi' => $dataBayi,
             'flashMessage' => $flashMessage
         ]);
@@ -40,7 +40,10 @@ class BayiController extends Controller
     public function tambahForm()
     {
         $this->requireLogin();
-        $this->view('bayi/tambah');
+        $flashMessage = $this->getFlashMessage();
+        $this->view('tambah_bayi', [
+            'flashMessage' => $flashMessage
+        ]);
     }
 
     /**
@@ -68,7 +71,7 @@ class BayiController extends Controller
             }
         }
 
-        $this->redirect('../views/bayi/index.php');
+        $this->redirect('index.php?controller=bayi&action=index');
     }
 
     /**
@@ -83,11 +86,13 @@ class BayiController extends Controller
 
         if (!$dataBayi) {
             $this->setFlashMessage('error', 'Data bayi tidak ditemukan');
-            $this->redirect('../views/bayi/index.php');
+            $this->redirect('index.php?controller=bayi&action=index');
         }
 
-        $this->view('bayi/edit', [
-            'dataBayi' => $dataBayi
+        $flashMessage = $this->getFlashMessage();
+        $this->view('edit_bayi', [
+            'dataBayi' => $dataBayi,
+            'flashMessage' => $flashMessage
         ]);
     }
 
@@ -118,7 +123,7 @@ class BayiController extends Controller
             }
         }
 
-        $this->redirect('../views/bayi/index.php');
+        $this->redirect('index.php?controller=bayi&action=index');
     }
 
     /**
@@ -135,7 +140,7 @@ class BayiController extends Controller
             $this->setFlashMessage('error', 'Gagal menghapus data bayi');
         }
 
-        $this->redirect('../views/bayi/index.php');
+        $this->redirect('index.php?controller=bayi&action=index');
     }
 
     /**
@@ -147,9 +152,11 @@ class BayiController extends Controller
 
         $keyword = isset($_GET['keyword']) ? $_GET['keyword'] : '';
         $dataBayi = $this->bayiModel->search($keyword);
+        $flashMessage = $this->getFlashMessage();
 
-        $this->view('bayi/index', [
+        $this->view('dashboard', [
             'dataBayi' => $dataBayi,
+            'flashMessage' => $flashMessage,
             'keyword' => $keyword
         ]);
     }

@@ -1,14 +1,3 @@
-<?php
-require_once '../controllers/Controller.php';
-
-// Cek login
-$controller = new Controller();
-$controller->requireLogin();
-
-// Ambil pesan flash jika ada
-$flashMessage = $controller->getFlashMessage();
-?>
-
 <!DOCTYPE html>
 <html lang="id">
 
@@ -33,7 +22,7 @@ $flashMessage = $controller->getFlashMessage();
         <h2>Tambah Data Balita</h2>
         <br>
 
-        <form action="../proses/proses_tambah.php" method="post">
+        <form action="index.php?controller=bayi&action=tambah" method="post">
             <div class="row mb-3">
                 <label class="col-sm-3 col-form-label">Nama</label>
                 <div class="col-sm-6">
@@ -93,7 +82,7 @@ $flashMessage = $controller->getFlashMessage();
                     <button type="submit" class="btn btn-primary">Simpan Data</button>
                 </div>
                 <div class="col-sm-6">
-                    <a href="dashboard.php" class="btn btn-outline-primary">Kembali</a>
+                    <a href="index.php?controller=bayi&action=index" class="btn btn-outline-primary">Kembali</a>
                 </div>
             </div>
         </form>

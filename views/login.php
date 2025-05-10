@@ -1,18 +1,3 @@
-<?php
-session_start();
-require_once '../controllers/UserController.php';
-
-$userController = new UserController();
-
-// Jika sudah login, redirect ke dashboard
-if ($userController->isLoggedIn()) {
-    $userController->redirect('dashboard.php');
-}
-
-// Ambil pesan flash jika ada
-$flashMessage = $userController->getFlashMessage();
-?>
-
 <!DOCTYPE html>
 <html>
 
@@ -40,7 +25,7 @@ $flashMessage = $userController->getFlashMessage();
         </div>
     <?php endif; ?>
 
-    <form action="../proses/proses_login.php" method="POST"
+    <form action="index.php?controller=user&action=login" method="POST"
         class="bg-white rounded-lg shadow-xl text-sm text-gray-500 border border-gray-200 p-8 py-12 w-80 sm:w-[352px]">
         <p class="text-2xl font-medium text-center">
             <span class="text-indigo-500">Akun</span> Login

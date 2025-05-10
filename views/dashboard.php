@@ -1,19 +1,3 @@
-<?php
-require_once '../config/Database.php';
-require_once '../controllers/BayiController.php';
-require_once '../controllers/Controller.php';
-
-// Cek login dan ambil data bayi
-$controller = new Controller();
-$controller->requireLogin();
-
-$bayiController = new BayiController();
-$dataBayi = $bayiController->bayiModel->getAllBayi();
-
-// Ambil pesan flash jika ada
-$flashMessage = $controller->getFlashMessage();
-?>
-
 <!DOCTYPE html>
 <html>
 
@@ -33,14 +17,15 @@ $flashMessage = $controller->getFlashMessage();
         <?php endif; ?>
 
         <h2 class="mb-4">Data Balita</h2>
-        <a href="tambah_bayi.php" class="btn btn-success mb-3">+ Tambah Data</a>
-        <a href="../proses/proses_logout.php" class="btn btn-danger mb-3">Logout</a>
+        <a href="index.php?controller=bayi&action=tambahForm" class="btn btn-success mb-3">+ Tambah Data</a>
+        <a href="index.php?controller=user&action=logout" class="btn btn-danger mb-3">Logout</a>
 
         <div class="mb-3">
-            <form action="../controllers/BayiController.php?action=search" method="GET" class="d-flex">
+            <form action="index.php" method="GET" class="d-flex">
+                <input type="hidden" name="controller" value="bayi">
                 <input type="hidden" name="action" value="search">
                 <input type="text" name="keyword" class="form-control me-2" placeholder="Cari nama bayi..."
-                    value="<?= isset($_GET['keyword']) ? $_GET['keyword'] : '' ?>">
+                    value="<?= isset($keyword) ? $keyword : '' ?>">
                 <button type="submit" class="btn btn-primary">Cari</button>
             </form>
         </div>
@@ -69,12 +54,13 @@ $flashMessage = $controller->getFlashMessage();
                         <td><?= $bayi['berat'] ?> kg</td>
                         <td><?= $bayi['jenisKelamin'] ?></td>
                         <td><?= $bayi['tanggalLahir'] ?></td>
-                        <td><?= $bayi['riwayat'] ?></td>
-                        <td><?= $bayi['catatan'] ?></td>
+                        <td><?= htmlspecialchars($bayi['riwayat']) ?></td>
+                        <td><?= htmlspecialchars($bayi['catatan']) ?></td>
                         <td>
-                            <a href="edit_bayi.php?id=<?= $bayi['id'] ?>" class="btn btn-warning btn-sm">Edit</a>
-                            <a href="../proses/proses_hapus.php?id=<?= $bayi['id'] ?>" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
+                            <a href="index.php?controller=bayi&action=editForm&id=<?= $bayi['id'] ?>"
+                                class="btn btn-warning btn-sm">Edit</a>
+                            <a href="index.php?controller=bayi&action=hapus&id=<?= $bayi['id'] ?>"
+                                class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
